@@ -18,6 +18,7 @@ import os
 import codecs
 import webapp2
 import jinja2
+from google.appengine.ext import db
 #from check import valid_month
 #from check import valid_year
 #from check import valid_day
@@ -38,9 +39,18 @@ class Handler(webapp2.RequestHandler):
 	def render(self, template, **kw):
 		self.write(self.render_str(template, **kw))
 
+
+class Declare(db.Model):
+	title = db.StringProperty( required=True)
+	area = db.TextProperty(required=True)
+	created = db.DateTimeProperty(auto_now_add = True)
+
+
 class Secondhandler(Handler):
 	def render_it(self, error="", title="", area=""):
-		self.render("shopping_list.html", error= error, title= title, area= area)
+		arts = db.GqlQuery("SELECT * FROM Declare "
+							"ORDER BY created DESC ")
+		self.render("shopping_list.html", error= error, title= title, area= area, arts = arts)
 	
 	def get(self):
 		self.render_it()
@@ -50,9 +60,12 @@ class Secondhandler(Handler):
 		area = self.request.get('ascii')
 
 		if title and area:
-			self.response.out.write("thk you for submitting")
+			a = Declare( title= title, area = area)
+			a.put()
+			self.redirect("/")
 		else:
 			self.render_it(error = "error, plz put in title nd body both",title= title, area= area)
+
 
 
 app = webapp2.WSGIApplication([
