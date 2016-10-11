@@ -1,4 +1,4 @@
-<!DOCTYPE HTML>
+PE HTML>
 <head>
 	<title>
 		ascii chain
@@ -18,16 +18,28 @@
 		</label>
 		<label>
 			<div>
+
 				pattern
 			</div>
 			<textarea type="text" name="ascii" >{{area}}</textarea>
 		</label>
+		
+		<div>
+		
+		{{error}}
+	</div>
 		<br>
 		<br>
 		<button>submit your ascii</button>
 	</form>
-	<div>
-		{{error}}
-	</div>
-
+	<hr>
+	<hr>
+	{% for art in arts %}
+		<div class="style">
+			{{art.title}}
+		</div>
+			<pre>
+				{{art.area}}
+			</pre>
+	{% endfor %}
 </body>
